@@ -2,13 +2,22 @@ import { Countries, Region, RegionsMap,LanguageMap, LanguageInfo } from '../type
 import axios from 'axios';
 import { CustomError, generateError } from '../utils/errorUtils';
 import { StatusCodes } from 'http-status-codes';
+import cache from '../utils/cache';
 
 export const fetchAllCountriesData= async() =>{
     let url = "https://restcountries.com/v3.1/all"
   try {
+
+    const cachedData = cache.get('countries');
+    if (cachedData) {
+      return cachedData;
+    }
     const response = await axios.get(url);
-    const data = await response.data as Countries[];
-  return data;
+    const countryData = await response.data as Countries[];
+
+     cache.set('countries', countryData);
+
+  return countryData;
   } catch(error){
     console.error(`unable to fetch data for countries:`, error);
 
