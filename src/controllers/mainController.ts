@@ -12,8 +12,6 @@ import { fetchCountriesData, fetchCountryData, fetchLanguageData, fetchRegionalD
 
 export class MainController {
 
-
-
 /**
    * @swagger
    * /api/countries:
