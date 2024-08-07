@@ -1,7 +1,5 @@
 # country-list-backend
 
-# REST API with TypeScript
-
 ## Setup
 
 1. Clone the repository
@@ -22,6 +20,10 @@
 
 Access the API documentation at `/api-docs`
 
-## Testing
 
-Run tests using Jest: `npm test`
+### To do
+- write integration and unit tests
+- authentication or authorization for each routes
+
+
+
