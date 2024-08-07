@@ -8,7 +8,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import csurf from 'csurf';
 import cookieParser from 'cookie-parser';
 import countryRoutes from './routes/countryRoutes';
-import { connectDB } from './utils/db';
+import { connectServer } from './utils/db';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerOptions } from './utils/swagger';
@@ -51,8 +51,12 @@ const specs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
-// Connect to DB and start server
-connectDB();
+// start server
+const PORT = process.env.PORT || 3000;
+ app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+// connectServer();
 
 
 export default app ;

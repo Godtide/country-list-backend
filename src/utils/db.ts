@@ -8,7 +8,7 @@ dotenv.config();
 let server: http.Server | null = null; // Variable to store the server instance
 
 
-const connectDB = async () => {
+const connectServer = async () => {
     const mongoURI = process.env.MONGODB_URI;
     if (!mongoURI) {
       console.error('MongoDB connection string not provided. Please set MONGODB_URI in .env file.');
@@ -21,14 +21,14 @@ const connectDB = async () => {
 
 
 const PORT = process.env.PORT || 3000;
-server = app.listen(PORT, () => {
+server = await app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 return server ;
 
 
   } catch (error) {
-    console.error('MongoDB connection error', error);
+    console.error('server connection error', error);
    return null
   }
 };
@@ -40,4 +40,4 @@ function closeServer(): void {
     }
   }
 
-export  { connectDB, closeServer }
+export  { connectServer, closeServer }
