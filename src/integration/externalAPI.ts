@@ -44,11 +44,12 @@ export const fetchCountriesData = async(currentPage: number, pageSize:number, re
     }
 
     return paginatedData
-} catch (error) {
-  console.log(error)
-//   if (!response.data) {
-    throw new Error('Network response was not ok');
-//   }
+}  catch (error) {
+   console.log(error)
+
+   const errorResponse: CustomError = generateError(StatusCodes.FAILED_DEPENDENCY,'unable to fetch countries data:' );
+   return errorResponse;
+
 }
 }
 
@@ -72,6 +73,12 @@ export const fetchCountryData= async (countryName: string): Promise<Countries | 
 
 export const fetchRegionalData = async() =>{
     try {
+
+        const cachedData = cache.get('regions');
+        if (cachedData) {
+          return cachedData;
+        }
+
         const countriesData = await fetchAllCountriesData() as Countries[];
     
       const regionsMap: RegionsMap = countriesData.reduce((acc: RegionsMap, country: Countries) => {
@@ -88,6 +95,7 @@ export const fetchRegionalData = async() =>{
       }, {});
   
       const regions: Region[] = Object.values(regionsMap);
+      cache.set('regions', regions);
       return regions;
    
   } catch (error) {
@@ -99,7 +107,12 @@ export const fetchRegionalData = async() =>{
 
 
 export const fetchLanguageData = async() =>{
+
     try {
+    const cachedData = cache.get('language');
+    if (cachedData) {
+      return cachedData;
+    }
     const countriesData = await fetchAllCountriesData() as Countries[];
     
       const languageMap: { [key: string]: LanguageInfo } = {};
@@ -127,6 +140,8 @@ export const fetchLanguageData = async() =>{
        }
       });
       const languages: LanguageInfo[] = Object.values(languageMap);
+
+      cache.set('language', languages);
      
       return languages
    
@@ -140,7 +155,13 @@ export const fetchLanguageData = async() =>{
 
 
 export const fetchStatisticalData= async() =>{
+
     try {
+
+        const cachedData = cache.get('statistics');
+        if (cachedData) {
+          return cachedData;
+        }
     const countriesData = await fetchAllCountriesData() as Countries[];
 
       const totalCountries = countriesData.length;
@@ -174,6 +195,7 @@ export const fetchStatisticalData= async() =>{
       mostWidelySpokenLanguage
     };
 
+     cache.set('statistics', statistics);
     return statistics;
   } catch (error) {
 
