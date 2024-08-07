@@ -13,51 +13,48 @@ import { fetchCountriesData, fetchCountryData, fetchLanguageData, fetchRegionalD
 export class MainController {
 
 
+
 /**
- * @swagger
- * /api/countries:
- *   get:
- *     summary: Retrieve a list of countries with pagination and optional filtering by region or population size
- *     description: Retrieve a list of countries data with pagaination with filter by region or population size
- *     tags:
- *       - Countries
- *     parameters:
- *       - name: currentPage
- *         in: query
- *         description:The current page of the countries to look up
- *         required: true
- *         schema:
- *           type: number
- * 
- *       - name: pageSize
- *         in: query
- *         description:The number of countries in the page
- *         required: true
- *         schema:
- *           type: number
- * 
- *        - name: region
- *         in: query
- *         description:The region of each country
- *         required: false
- *         schema:
- *           type: string
- * 
- *         - name: populationSize
- *         in: query
- *         description:The populationsize of the country to be retrieved
- *         required: false
- *         schema:
- *           type: number
- *     responses:
- *       200:
- *         description: Successful response
- *       400:
- *         description: Invalid input format, consider adding the currentPage and pageSize
- *       500:
- *         description: Internal server error
- */
-    async PaginatedCountriesData (req: Request, res: Response, next: NextFunction ) {
+   * @swagger
+   * /api/countries:
+   *   get:
+   *     summary: Retrieve a list of countries with pagination and optional filtering by region or population size
+   *     description: Retrieve a list of countries data with pagaination with filter by region or population size
+   *     tags:
+   *       - Countries
+   *     parameters:
+   *       - in: query
+   *         name: currentPage
+   *         description: the current page of the countries to look up
+   *         required: true
+   *         type: string
+   * 
+   *       - in: query
+   *         name: pageSize
+   *         description: The number of countries in the page
+   *         required: true
+   *         type: string
+   * 
+   *       - in: query
+   *         name: region
+   *         description: The region of each country
+   *         required: false
+   *         type: string
+   * 
+   *       - in: query
+   *         name: populationSize
+   *         description: The populationsize of the country to be retrieved
+   *         required: false
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: Successful paginated response
+   *       404:
+   *         description: Invalid input format, consider adding the currentPage and pageSize
+   *       500:
+   *         description: Internal server error
+   */    
+async PaginatedCountriesData (req: Request, res: Response, next: NextFunction ) {
     try {
       const { currentPage, pageSize, region, populationSize } = req.query;
 
@@ -73,13 +70,24 @@ export class MainController {
 
           console.log(`paginated data ${pageNo} & ${pageSized}`)
 
-          if(regions){
+          if(region){
             paginatedCountries = await fetchCountriesData(pageNo,pageSized,regions);
-            res.status(200).json(paginatedCountries)
+            const pagination = {
+                currentPage,
+                pageSize,
+                paginatedCountries
+               };
+            res.status(200).json(pagination);
+
           }
           if(populationSized){
             paginatedCountries = await fetchCountriesData(pageNo,pageSized,undefined,populationSized); 
-            res.status(200).json(paginatedCountries)
+            const pagination = {
+                currentPage,
+                pageSize,
+                paginatedCountries
+               };
+            res.status(200).json(pagination)
           }
          
       };
@@ -87,9 +95,13 @@ export class MainController {
 
         console.log('Calling fetchCountriesData...');
         paginatedCountries = await fetchCountriesData(Number(currentPage), Number(pageSize));
+        const pagination = {
+            currentPage,
+            pageSize,
+            paginatedCountries
+           };
 
-        res.status(200).json(paginatedCountries);
-        // }
+        res.status(200).json(pagination);
 
     } catch (error) {
         console.log(`paginated data: ${error}`);

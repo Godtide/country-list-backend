@@ -44,11 +44,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 
-// // Generate Swagger JSON
-// const specs = swaggerJsdoc(swaggerOptions);
+// Generate Swagger JSON
+const specs = swaggerJsdoc(swaggerOptions);
 
-// // Serve Swagger UI
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
 // Connect to DB and start server
